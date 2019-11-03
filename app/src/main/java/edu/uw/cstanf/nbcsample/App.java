@@ -1,9 +1,13 @@
 package edu.uw.cstanf.nbcsample;
 
 import android.app.Application;
+import android.content.Intent;
 import android.util.Log;
 
+import edu.uw.cstanf.nbcsample.feed.NewsFeedActivity;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class App extends Application {
 

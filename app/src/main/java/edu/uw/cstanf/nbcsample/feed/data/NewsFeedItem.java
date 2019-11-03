@@ -1,6 +1,6 @@
 package edu.uw.cstanf.nbcsample.feed.data;
 
-final class NewsFeedItem {
+public final class NewsFeedItem {
 
     private String headline;
     private String thumbnailUrl;
@@ -8,5 +8,13 @@ final class NewsFeedItem {
     NewsFeedItem(String headline, String thumbnailUrl) {
         this.headline = headline;
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public String getHeadline() {
+        return this.headline;
+    }
+
+    public String getThumbnailUrl() {
+        return this.thumbnailUrl;
     }
 }

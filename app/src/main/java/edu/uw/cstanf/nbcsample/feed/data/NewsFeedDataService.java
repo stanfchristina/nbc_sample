@@ -1,6 +1,7 @@
 package edu.uw.cstanf.nbcsample.feed.data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -16,19 +17,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
+import java.util.concurrent.RunnableFuture;
+
+import edu.uw.cstanf.nbcsample.feed.NewsFeedActivity;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 /** */
 public class NewsFeedDataService {
     private static NewsFeedDataService instance;
     private Context context;
     private RequestQueue requestQueue;
-
-    private List<NewsFeedGroup> feedGroups = new ArrayList<>();
+    private List<NewsFeedGroup> feedGroups;
 
     private NewsFeedDataService(Context context) {
         this.context = context;
         this.requestQueue = getRequestQueue();
+        this.feedGroups = new ArrayList<>();
     }
 
     public static synchronized NewsFeedDataService getInstance(Context context) {
@@ -36,6 +41,10 @@ public class NewsFeedDataService {
             instance = new NewsFeedDataService(context);
         }
         return instance;
+    }
+
+    public List<NewsFeedGroup> getNewsFeedGroups() {
+        return this.feedGroups;
     }
 
     public void fetchData(String sourceUrl) {
@@ -50,6 +59,9 @@ public class NewsFeedDataService {
                             parseNewsFeedData(response);
                             Log.i("CHRISTINA", "feed groups: " + feedGroups.toString());
                             Log.i("CHRISTINA", "feed groups len: " + feedGroups.size());
+                            Intent intent  = new Intent(context, NewsFeedActivity.class);
+                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(intent);
                         } else {
                             Log.e("CHRISTINA", "response was null");
                         }
@@ -104,12 +116,12 @@ public class NewsFeedDataService {
         try {
             JSONObject heroItem = hero.getJSONObject("item");
             NewsFeedItem item = new NewsFeedItem(heroItem.getString("headline"), heroItem.getString("tease"));
-            NewsFeedGroup heroGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.HERO, "");
+            NewsFeedGroup heroGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.HERO, "hero placeholder");
             heroGroup.addItem(item);
 
             feedGroups.add(heroGroup);
         } catch (JSONException e) {
-            Log.e("CHRISTINA", e.getMessage());
+            Log.e("CHRISTINA", "hero " + e.getMessage());
         }
     }
 
@@ -118,7 +130,7 @@ public class NewsFeedDataService {
         try {
             JSONArray articles = section.getJSONArray("items");
             // String sectionHeader = section.getString("header");
-            NewsFeedGroup sectionGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.SECTION, "");
+            NewsFeedGroup sectionGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.SECTION, "article placeholder");
             for (int i = 0; i < articles.length(); i++) {
                 JSONObject article = articles.getJSONObject(i);
                 NewsFeedItem item = new NewsFeedItem(article.getString("headline"), article.getString("tease"));
@@ -136,8 +148,8 @@ public class NewsFeedDataService {
 
         try {
             JSONArray videoItems = videos.getJSONArray("videos");
-            // String sectionHeader = section.getString("header");
-            NewsFeedGroup videoGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.VIDEOS, "");
+            String header = videos.getString("header");
+            NewsFeedGroup videoGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.VIDEOS, header);
 
             for (int i = 0; i < videoItems.length(); i++) {
                 JSONObject video = videoItems.getJSONObject(i);

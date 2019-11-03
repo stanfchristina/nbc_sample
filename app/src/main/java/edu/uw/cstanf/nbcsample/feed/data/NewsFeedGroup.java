@@ -6,20 +6,25 @@ import java.util.List;
 public class NewsFeedGroup {
     public enum GroupType { SECTION, VIDEOS, HERO }
 
-    private List<NewsFeedItem> groupItems = new ArrayList<>();
+    private List<NewsFeedItem> groupItems;
     private GroupType groupType;
-    private String title;
+    private String header;
 
-    public NewsFeedGroup(GroupType groupType, String title) {
+    NewsFeedGroup(GroupType groupType, String header) {
+        this.groupItems = new ArrayList<>();
         this.groupType = groupType;
-        this.title = title;
+        this.header = header;
     }
 
-    public void addItem(NewsFeedItem item) {
+    void addItem(NewsFeedItem item) {
         groupItems.add(item);
     }
 
     public List<NewsFeedItem> getGroupItems() {
         return groupItems;
+    }
+
+    public String getHeader() {
+        return header;
     }
 }
