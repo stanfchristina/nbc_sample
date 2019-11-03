@@ -17,9 +17,9 @@ public class NewsFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
 
-        newsFeedRecycler = (RecyclerView) findViewById(R.id.newsfeed_recycler_view);
-        newsFeedLayoutManager = new LinearLayoutManager(this);
-        newsFeedAdapter = new NewsFeedAdapter();
+       // newsFeedRecycler = (RecyclerView) findViewById(R.id.newsfeed_recycler_view);
+       // newsFeedLayoutManager = new LinearLayoutManager(this);
+       // newsFeedAdapter = new NewsFeedAdapter();
 
     }
 }
