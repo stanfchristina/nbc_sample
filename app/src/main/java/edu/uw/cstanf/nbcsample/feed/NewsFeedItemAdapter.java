@@ -1,11 +1,16 @@
 package edu.uw.cstanf.nbcsample.feed;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,27 +20,36 @@ import java.util.List;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedItem;
+import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticlesDataService;
 
 public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter.ItemViewHolder> {
-    private Context context;
-    private List<NewsFeedItem> newsItems;
+    private final Context context;
+    private final List<NewsFeedItem> newsItems;
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private Context context;
-        private ImageView thumbnail;
-        private TextView headline;
+        private final Context context;
+        private final ImageButton saveButton;
+        private final ImageView thumbnail;
+        private final TextView headline;
 
         ItemViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
 
             this.context = context;
+            this.saveButton = itemView.findViewById(R.id.news_item_button);
             this.thumbnail = itemView.findViewById(R.id.news_item_image);
             this.headline = itemView.findViewById(R.id.news_item_text);
         }
 
         void bind(NewsFeedItem newsItem) {
-            headline.setText(newsItem.getHeadline());
             Glide.with(context).load(newsItem.getThumbnailUrl()).into(thumbnail);
+            headline.setText(newsItem.getHeadline());
+
+            saveButton.setOnClickListener(v -> {
+                SavedArticlesDataService dataService = new SavedArticlesDataService();
+                dataService.saveArticle();
+                Log.i("CHRISTINA", "saving article...");
+            });
         }
     }
 

@@ -28,10 +28,9 @@ public final class NewsFeedDataService {
     private static final String HERO_TYPE = "Hero";
     private static final String SECTION_TYPE = "Section";
     private static final String VIDEO_TYPE = "Videos";
-
     private static NewsFeedDataService instance;
 
-    private ListeningExecutorService executor;
+    private final ListeningExecutorService executor;
     private List<NewsFeedGroup> feedGroups;
 
     private NewsFeedDataService() {

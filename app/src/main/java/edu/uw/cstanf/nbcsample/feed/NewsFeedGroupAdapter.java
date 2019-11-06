@@ -2,9 +2,10 @@ package edu.uw.cstanf.nbcsample.feed;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +17,13 @@ import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedGroup;
 
 final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapter.GroupViewHolder> {
-    private Context context;
-    private List<NewsFeedGroup> newsGroups;
+    private final Context context;
+    private final List<NewsFeedGroup> newsGroups;
 
     static class GroupViewHolder extends RecyclerView.ViewHolder {
-        private Context context;
-        private TextView groupHeader;
-        private RecyclerView itemRecycler;
+        private final Context context;
+        private final TextView groupHeader;
+        private final RecyclerView itemRecycler;
 
         GroupViewHolder(@NonNull View groupView, Context context) {
             super(groupView);
@@ -38,7 +39,7 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
 
             itemRecycler.setLayoutManager(itemManager);
             itemRecycler.setAdapter(itemAdapter);
-            itemRecycler.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL));
+            itemRecycler.addItemDecoration(new HorizontalItemDecoration(16));
             groupHeader.setText(newsGroup.getHeader());
         }
     }
@@ -63,5 +64,22 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
     @Override
     public int getItemCount() {
         return newsGroups.size();
+    }
+
+    static class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
+        private final int horizontalSpace;
+
+        HorizontalItemDecoration(int horizontalSpace) {
+            this.horizontalSpace = horizontalSpace;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                   RecyclerView.State state) {
+            int endItemPosition = parent.getAdapter().getItemCount() - 1;
+            if (parent.getChildAdapterPosition(view) != endItemPosition) {
+                outRect.right = horizontalSpace;
+            }
+        }
     }
 }

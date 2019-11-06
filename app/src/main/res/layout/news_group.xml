@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="320dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
-    android:orientation="vertical">
+    android:layout_height="300dp">
     <TextView
         android:id="@+id/news_group_header"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:textColor="#000000"
         android:textSize="28dp"
         android:text="placeholder"/>
@@ -17,6 +15,7 @@
         android:id="@+id/group_recycler"
         android:scrollbars="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="256dp">
+        android:layout_height="256dp"
+        android:layout_alignParentBottom="true">
     </androidx.recyclerview.widget.RecyclerView>
-</LinearLayout>
+</RelativeLayout>
