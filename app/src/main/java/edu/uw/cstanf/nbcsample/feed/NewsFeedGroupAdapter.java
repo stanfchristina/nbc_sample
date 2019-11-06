@@ -2,9 +2,9 @@ package edu.uw.cstanf.nbcsample.feed;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +38,12 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
 
             itemRecycler.setLayoutManager(itemManager);
             itemRecycler.setAdapter(itemAdapter);
+            itemRecycler.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL));
             groupHeader.setText(newsGroup.getHeader());
         }
     }
 
     NewsFeedGroupAdapter(Context context, List<NewsFeedGroup> newsGroups) {
-        Log.i("CHRISTINA", "constructor group adapter");
         this.context = context;
         this.newsGroups = newsGroups;
     }

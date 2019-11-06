@@ -2,6 +2,7 @@ package edu.uw.cstanf.nbcsample.feed;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -22,9 +23,9 @@ public class NewsFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
 
-       newsFeedRecycler = (RecyclerView) findViewById(R.id.newsfeed_recycler);
+       newsFeedRecycler = findViewById(R.id.newsfeed_recycler);
        newsFeedLayoutManager = new LinearLayoutManager(this);
-       newsFeedAdapter = new NewsFeedGroupAdapter(this, NewsFeedDataService.getInstance(this.getApplicationContext()).getNewsFeedGroups());
+       newsFeedAdapter = new NewsFeedGroupAdapter(this, NewsFeedDataService.getInstance().getNewsFeedGroups());
 
        newsFeedRecycler.setAdapter(newsFeedAdapter);
        newsFeedRecycler.setLayoutManager(newsFeedLayoutManager);

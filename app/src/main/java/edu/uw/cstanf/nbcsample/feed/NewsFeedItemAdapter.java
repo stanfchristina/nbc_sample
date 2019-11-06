@@ -3,7 +3,6 @@ package edu.uw.cstanf.nbcsample.feed;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItem
     }
 
     public NewsFeedItemAdapter(Context context, List<NewsFeedItem> newsItems) {
-        Log.i("CHRISTINA", "constructor item adapter");
         this.context = context;
         this.newsItems = newsItems;
     }

@@ -1,13 +1,9 @@
 package edu.uw.cstanf.nbcsample.feed.data;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.Volley;
-import com.google.common.util.concurrent.Futures;
+import androidx.annotation.NonNull;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -24,67 +20,54 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-/** Provides rea*/
-public class NewsFeedDataService {
+/**
+ * Provides methods for refreshing and querying data displayed in a news feed.
+ */
+public final class NewsFeedDataService {
     private static final String LOG_TAG = "NewsFeedDataService";
+    private static final String HERO_TYPE = "Hero";
+    private static final String SECTION_TYPE = "Section";
+    private static final String VIDEO_TYPE = "Videos";
+
     private static NewsFeedDataService instance;
 
-    private Context context;
     private ListeningExecutorService executor;
     private List<NewsFeedGroup> feedGroups;
-    private RequestQueue requestQueue;
 
-    private NewsFeedDataService(Context context) {
-        this.context = context;
+    private NewsFeedDataService() {
         this.executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
         this.feedGroups = new ArrayList<>();
-        this.requestQueue = getRequestQueue();
     }
 
-    public static synchronized NewsFeedDataService getInstance(Context context) {
+    public static synchronized NewsFeedDataService getInstance() {
         if (instance == null) {
-            instance = new NewsFeedDataService(context);
+            instance = new NewsFeedDataService();
         }
         return instance;
     }
 
+    /**
+     * Returns the current {@link NewsFeedGroup} data.
+     */
     public List<NewsFeedGroup> getNewsFeedGroups() {
         return this.feedGroups;
     }
 
-    public ListenableFuture<Boolean> attemptFetch(String url) {
+    /**
+     * Fetches then parses news feed data, returning true when successful and false otherwise.
+     *
+     * @param sourceUrl a non-null String url where the data is hosted
+     */
+    public ListenableFuture<Boolean> updateData(@NonNull String sourceUrl) {
         return executor.submit(
                 () -> {
-                    String response = getJsonFromURL(url);
+                    JSONObject response = getJsonFromURL(sourceUrl);
                     if (response != null) {
-                        return parseNewsFeedData(new JSONObject(response));
+                        return parseNewsFeedData(response);
                     }
                     return false;
-                    /*RequestFuture<JSONObject> future = RequestFuture.newFuture();
-                    JsonObjectRequest request = new JsonObjectRequest(url, new JSONObject(), future, future);
-                    requestQueue.add(request);
-
-
-                    try {
-                        JSONObject response = future.get();
-                        if (response != null) {
-                            return parseNewsFeedData(response);
-                        }
-                        Log.w(LOG_TAG, "response was null");
-                        return false;
-                    } catch (Exception e) {
-                        Log.w(LOG_TAG, "bad fetch" + e);
-                        return false;
-                    }*/
                 }
         );
-    }
-
-    private RequestQueue getRequestQueue() {
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(context.getApplicationContext());
-        }
-        return requestQueue;
     }
 
     private boolean parseNewsFeedData(JSONObject response) {
@@ -94,14 +77,14 @@ public class NewsFeedDataService {
             for (int i = 0; i < data.length(); i++) {
                 JSONObject group = data.getJSONObject(i);
 
-                switch(group.getString("type")) {
-                    case "Hero":
+                switch (group.getString("type")) {
+                    case HERO_TYPE:
                         parseHero(group);
                         break;
-                    case "Section":
+                    case SECTION_TYPE:
                         parseSection(group);
                         break;
-                    case "Videos":
+                    case VIDEO_TYPE:
                         parseVideos(group);
                         break;
                     default:
@@ -113,31 +96,29 @@ public class NewsFeedDataService {
             Log.i(LOG_TAG, "feed groups len: " + feedGroups.size());
             return true;
         } catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage());
+            Log.w(LOG_TAG, "Error parsing news feed data: " + e);
             return false;
         }
     }
 
     private void parseHero(JSONObject hero) {
-        Log.i(LOG_TAG, "parseHero");
         try {
             JSONObject heroItem = hero.getJSONObject("item");
             NewsFeedItem item = new NewsFeedItem(heroItem.getString("headline"), heroItem.getString("tease"));
-            NewsFeedGroup heroGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.HERO, "hero placeholder");
+            NewsFeedGroup heroGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.HERO, "Hero Placeholder");
             heroGroup.addItem(item);
 
             feedGroups.add(heroGroup);
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "hero " + e.getMessage());
+            Log.w(LOG_TAG, "Error parsing hero data: " + e);
         }
     }
 
     private void parseSection(JSONObject section) {
-        Log.i(LOG_TAG, "parseSection");
         try {
             JSONArray articles = section.getJSONArray("items");
             // String sectionHeader = section.getString("header");
-            NewsFeedGroup sectionGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.SECTION, "article placeholder");
+            NewsFeedGroup sectionGroup = new NewsFeedGroup(NewsFeedGroup.GroupType.SECTION, "Section Placeholder");
             for (int i = 0; i < articles.length(); i++) {
                 JSONObject article = articles.getJSONObject(i);
                 NewsFeedItem item = new NewsFeedItem(article.getString("headline"), article.getString("tease"));
@@ -146,13 +127,11 @@ public class NewsFeedDataService {
 
             feedGroups.add(sectionGroup);
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "section " + e.getMessage());
+            Log.w(LOG_TAG, "Error parsing section data: " + e);
         }
     }
 
     private void parseVideos(JSONObject videos) {
-        Log.i(LOG_TAG, "parseVideos");
-
         try {
             JSONArray videoItems = videos.getJSONArray("videos");
             String header = videos.getString("header");
@@ -166,37 +145,30 @@ public class NewsFeedDataService {
 
             feedGroups.add(videoGroup);
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "videos " + e.getMessage());
+            Log.w(LOG_TAG, "Error parsing video data: " + e);
         }
     }
 
-    public String getJsonFromURL(String wantedUrl) {
-        URL url = null;
-        BufferedReader reader = null;
-        StringBuilder stringBuilder = new StringBuilder();
-
+    private JSONObject getJsonFromURL(String sourceUrl) {
         try {
-            // create the HttpURLConnection
-            url = new URL(wantedUrl);
+            // Try to connect to the URL.
+            URL url = new URL(sourceUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            // just want to do an HTTP GET here
             connection.setRequestMethod("GET");
-
-            // give it 15 seconds to respond
-            //connection.setReadTimeout(2 * 1000);
             connection.connect();
 
-            // read the output from the server
-            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            // Read the output from the connection.
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
 
-            String line = null;
             while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line + "\n");
             }
-            return stringBuilder.toString();
+
+            return new JSONObject(stringBuilder.toString());
         } catch (Exception e) {
-            Log.w(LOG_TAG, "getjsonfromurl " + e);
+            Log.w(LOG_TAG, "Unable to fetch/read data from URL: " + e);
             return null;
         }
     }

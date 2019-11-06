@@ -25,13 +25,10 @@ public class App extends Application {
 
         Log.i(LOG_TAG, "here");
 
-        NewsFeedDataService instance = NewsFeedDataService.getInstance(this.getApplicationContext());
-
-        Futures.addCallback(instance.attemptFetch(SOURCE_URL), new FutureCallback<Boolean>() {
+        Futures.addCallback(NewsFeedDataService.getInstance().updateData(SOURCE_URL), new FutureCallback<Boolean>() {
             @Override
-            public void onSuccess(@NullableDecl Boolean result) {
-                if (result != null && result) {
-                    // Start activity
+            public void onSuccess(@NullableDecl Boolean dataLoaded) {
+                if (dataLoaded != null && dataLoaded) {
                     Intent intent  = new Intent(getApplicationContext(), NewsFeedActivity.class);
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     getApplicationContext().startActivity(intent);
@@ -40,7 +37,7 @@ public class App extends Application {
 
             @Override
             public void onFailure(Throwable t) {
-                Log.w(LOG_TAG, t);
+                Log.w(LOG_TAG, "Error fetching news feed data on startup: " + t);
             }
         }, MoreExecutors.directExecutor());
     }
