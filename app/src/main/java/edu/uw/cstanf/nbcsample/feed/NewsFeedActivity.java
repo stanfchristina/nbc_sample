@@ -1,15 +1,17 @@
 package edu.uw.cstanf.nbcsample.feed;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 
 public class NewsFeedActivity extends AppCompatActivity {
+    private static final String LOG_TAG = "NewsFeedActivity";
+
     private RecyclerView newsFeedRecycler;
     private RecyclerView.Adapter newsFeedAdapter;
     private RecyclerView.LayoutManager newsFeedLayoutManager;

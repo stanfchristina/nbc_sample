@@ -1,39 +1,44 @@
 package edu.uw.cstanf.nbcsample.feed.data;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.Executors;
 
-import edu.uw.cstanf.nbcsample.feed.NewsFeedActivity;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-/** */
+/** Provides rea*/
 public class NewsFeedDataService {
+    private static final String LOG_TAG = "NewsFeedDataService";
     private static NewsFeedDataService instance;
+
     private Context context;
-    private RequestQueue requestQueue;
+    private ListeningExecutorService executor;
     private List<NewsFeedGroup> feedGroups;
+    private RequestQueue requestQueue;
 
     private NewsFeedDataService(Context context) {
         this.context = context;
-        this.requestQueue = getRequestQueue();
+        this.executor = MoreExecutors.listeningDecorator(Executors.newSingleThreadExecutor());
         this.feedGroups = new ArrayList<>();
+        this.requestQueue = getRequestQueue();
     }
 
     public static synchronized NewsFeedDataService getInstance(Context context) {
@@ -47,35 +52,32 @@ public class NewsFeedDataService {
         return this.feedGroups;
     }
 
-    public void fetchData(String sourceUrl) {
-        Log.i("CHRISTINA", "bouta fetch");
-        String url = sourceUrl;
+    public ListenableFuture<Boolean> attemptFetch(String url) {
+        return executor.submit(
+                () -> {
+                    String response = getJsonFromURL(url);
+                    if (response != null) {
+                        return parseNewsFeedData(new JSONObject(response));
+                    }
+                    return false;
+                    /*RequestFuture<JSONObject> future = RequestFuture.newFuture();
+                    JsonObjectRequest request = new JsonObjectRequest(url, new JSONObject(), future, future);
+                    requestQueue.add(request);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+
+                    try {
+                        JSONObject response = future.get();
                         if (response != null) {
-                            parseNewsFeedData(response);
-                            Log.i("CHRISTINA", "feed groups: " + feedGroups.toString());
-                            Log.i("CHRISTINA", "feed groups len: " + feedGroups.size());
-                            Intent intent  = new Intent(context, NewsFeedActivity.class);
-                            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                        } else {
-                            Log.e("CHRISTINA", "response was null");
+                            return parseNewsFeedData(response);
                         }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        Log.e("CHRISTINA", "error response " + error.getMessage());
-                    }
-                });
-
-        // Runs on background thread.
-        this.requestQueue.add(jsonObjectRequest);
+                        Log.w(LOG_TAG, "response was null");
+                        return false;
+                    } catch (Exception e) {
+                        Log.w(LOG_TAG, "bad fetch" + e);
+                        return false;
+                    }*/
+                }
+        );
     }
 
     private RequestQueue getRequestQueue() {
@@ -85,7 +87,7 @@ public class NewsFeedDataService {
         return requestQueue;
     }
 
-    private void parseNewsFeedData(JSONObject response) {
+    private boolean parseNewsFeedData(JSONObject response) {
         try {
             JSONArray data = response.getJSONArray("data");
 
@@ -106,13 +108,18 @@ public class NewsFeedDataService {
                         break;
                 }
             }
+
+            Log.i(LOG_TAG, "feed groups: " + feedGroups.toString());
+            Log.i(LOG_TAG, "feed groups len: " + feedGroups.size());
+            return true;
         } catch (JSONException e) {
-            Log.e("CHRISTINA", e.getMessage());
+            Log.e(LOG_TAG, e.getMessage());
+            return false;
         }
     }
 
     private void parseHero(JSONObject hero) {
-        Log.i("CHRISTINA", "parseHero");
+        Log.i(LOG_TAG, "parseHero");
         try {
             JSONObject heroItem = hero.getJSONObject("item");
             NewsFeedItem item = new NewsFeedItem(heroItem.getString("headline"), heroItem.getString("tease"));
@@ -121,12 +128,12 @@ public class NewsFeedDataService {
 
             feedGroups.add(heroGroup);
         } catch (JSONException e) {
-            Log.e("CHRISTINA", "hero " + e.getMessage());
+            Log.e(LOG_TAG, "hero " + e.getMessage());
         }
     }
 
     private void parseSection(JSONObject section) {
-        Log.i("CHRISTINA", "parseSection");
+        Log.i(LOG_TAG, "parseSection");
         try {
             JSONArray articles = section.getJSONArray("items");
             // String sectionHeader = section.getString("header");
@@ -139,12 +146,12 @@ public class NewsFeedDataService {
 
             feedGroups.add(sectionGroup);
         } catch (JSONException e) {
-            Log.e("CHRISTINA", "section " + e.getMessage());
+            Log.e(LOG_TAG, "section " + e.getMessage());
         }
     }
 
     private void parseVideos(JSONObject videos) {
-        Log.i("CHRISTINA", "parseVideos");
+        Log.i(LOG_TAG, "parseVideos");
 
         try {
             JSONArray videoItems = videos.getJSONArray("videos");
@@ -159,8 +166,38 @@ public class NewsFeedDataService {
 
             feedGroups.add(videoGroup);
         } catch (JSONException e) {
-            Log.e("CHRISTINA", "videos " + e.getMessage());
+            Log.e(LOG_TAG, "videos " + e.getMessage());
         }
     }
 
+    public String getJsonFromURL(String wantedUrl) {
+        URL url = null;
+        BufferedReader reader = null;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        try {
+            // create the HttpURLConnection
+            url = new URL(wantedUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // just want to do an HTTP GET here
+            connection.setRequestMethod("GET");
+
+            // give it 15 seconds to respond
+            //connection.setReadTimeout(2 * 1000);
+            connection.connect();
+
+            // read the output from the server
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line + "\n");
+            }
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "getjsonfromurl " + e);
+            return null;
+        }
+    }
 }

@@ -4,20 +4,44 @@ import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
+
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+
 import edu.uw.cstanf.nbcsample.feed.NewsFeedActivity;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class App extends Application {
-
-    private final String SOURCE_URL = "https://s3.amazonaws.com/shrekendpoint/news.json";
+    private static final String LOG_TAG = "App";
+    private static final String SOURCE_URL = "https://s3.amazonaws.com/shrekendpoint/news.json";
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Log.i("CHRISTINA", "here");
-        NewsFeedDataService.getInstance(this.getApplicationContext()).fetchData(SOURCE_URL);
+        Log.i(LOG_TAG, "here");
+
+        NewsFeedDataService instance = NewsFeedDataService.getInstance(this.getApplicationContext());
+
+        Futures.addCallback(instance.attemptFetch(SOURCE_URL), new FutureCallback<Boolean>() {
+            @Override
+            public void onSuccess(@NullableDecl Boolean result) {
+                if (result != null && result) {
+                    // Start activity
+                    Intent intent  = new Intent(getApplicationContext(), NewsFeedActivity.class);
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                    getApplicationContext().startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.w(LOG_TAG, t);
+            }
+        }, MoreExecutors.directExecutor());
     }
 }
