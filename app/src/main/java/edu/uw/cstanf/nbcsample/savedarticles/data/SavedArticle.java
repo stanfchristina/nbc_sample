@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
  * Represents an article a user has saved.
  */
 @Entity(tableName = "saved_articles")
-public class SavedArticle {
+public final class SavedArticle {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "article_id")
     public int articleId;

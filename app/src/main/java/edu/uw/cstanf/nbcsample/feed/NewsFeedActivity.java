@@ -15,19 +15,15 @@ import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 public class NewsFeedActivity extends AppCompatActivity {
     private static final String LOG_TAG = "NewsFeedActivity";
 
-    private RecyclerView newsFeedRecycler;
-    private RecyclerView.Adapter newsFeedAdapter;
-    private RecyclerView.LayoutManager newsFeedLayoutManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("CHRISTINA", "onCreate in newsfeedactivity");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
 
-        newsFeedRecycler = findViewById(R.id.newsfeed_recycler);
-        newsFeedLayoutManager = new LinearLayoutManager(this);
-        newsFeedAdapter = new NewsFeedGroupAdapter(this, NewsFeedDataService.getInstance().getNewsFeedGroups());
+        RecyclerView newsFeedRecycler = findViewById(R.id.newsfeed_recycler);
+        RecyclerView.LayoutManager newsFeedLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.Adapter newsFeedAdapter = new NewsFeedGroupAdapter(this.getApplication(), this, NewsFeedDataService.getInstance().getNewsFeedGroups());
 
         newsFeedRecycler.setAdapter(newsFeedAdapter);
         newsFeedRecycler.setLayoutManager(newsFeedLayoutManager);
