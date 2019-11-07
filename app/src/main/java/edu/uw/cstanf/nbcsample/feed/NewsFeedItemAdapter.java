@@ -1,11 +1,6 @@
 package edu.uw.cstanf.nbcsample.feed;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +9,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedItem;
-import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticlesDataService;
+import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticlesDao;
 
 public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter.ItemViewHolder> {
     private final Context context;
@@ -46,8 +44,7 @@ public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItem
             headline.setText(newsItem.getHeadline());
 
             saveButton.setOnClickListener(v -> {
-                SavedArticlesDataService dataService = new SavedArticlesDataService();
-                dataService.saveArticle();
+                SavedArticlesDao service;
                 Log.i("CHRISTINA", "saving article...");
             });
         }

@@ -1,4 +1,6 @@
 package edu.uw.cstanf.nbcsample.savedarticles;
 
-public class SavedArticlesActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SavedArticlesActivity extends AppCompatActivity {
 }

@@ -38,9 +38,13 @@ public final class NewsFeedDataService {
         this.feedGroups = new ArrayList<>();
     }
 
-    public static synchronized NewsFeedDataService getInstance() {
+    public static NewsFeedDataService getInstance() {
         if (instance == null) {
-            instance = new NewsFeedDataService();
+            synchronized (NewsFeedDataService.class) {
+                if (instance == null) {
+                    instance = new NewsFeedDataService();
+                }
+            }
         }
         return instance;
     }

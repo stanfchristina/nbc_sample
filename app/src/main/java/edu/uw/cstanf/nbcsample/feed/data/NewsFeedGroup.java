@@ -3,9 +3,11 @@ package edu.uw.cstanf.nbcsample.feed.data;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Data class representing a distinct group of a news feed. */
+/**
+ * Data class representing a distinct group of a news feed.
+ */
 public final class NewsFeedGroup {
-    public enum GroupType { SECTION, VIDEOS, HERO }
+    public enum GroupType {SECTION, VIDEOS, HERO}
 
     private List<NewsFeedItem> groupItems;
     private GroupType groupType;

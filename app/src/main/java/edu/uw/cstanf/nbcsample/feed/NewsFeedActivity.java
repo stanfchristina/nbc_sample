@@ -2,11 +2,12 @@ package edu.uw.cstanf.nbcsample.feed;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
@@ -24,13 +25,13 @@ public class NewsFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
 
-       newsFeedRecycler = findViewById(R.id.newsfeed_recycler);
-       newsFeedLayoutManager = new LinearLayoutManager(this);
-       newsFeedAdapter = new NewsFeedGroupAdapter(this, NewsFeedDataService.getInstance().getNewsFeedGroups());
+        newsFeedRecycler = findViewById(R.id.newsfeed_recycler);
+        newsFeedLayoutManager = new LinearLayoutManager(this);
+        newsFeedAdapter = new NewsFeedGroupAdapter(this, NewsFeedDataService.getInstance().getNewsFeedGroups());
 
-       newsFeedRecycler.setAdapter(newsFeedAdapter);
-       newsFeedRecycler.setLayoutManager(newsFeedLayoutManager);
-       newsFeedRecycler.addItemDecoration(new VerticalItemDecoration(12));
+        newsFeedRecycler.setAdapter(newsFeedAdapter);
+        newsFeedRecycler.setLayoutManager(newsFeedLayoutManager);
+        newsFeedRecycler.addItemDecoration(new VerticalItemDecoration(12));
     }
 
     static class VerticalItemDecoration extends RecyclerView.ItemDecoration {

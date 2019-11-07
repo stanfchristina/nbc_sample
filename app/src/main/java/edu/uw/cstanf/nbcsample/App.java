@@ -29,7 +29,7 @@ public class App extends Application {
             @Override
             public void onSuccess(@NullableDecl Boolean dataLoaded) {
                 if (dataLoaded != null && dataLoaded) {
-                    Intent intent  = new Intent(getApplicationContext(), NewsFeedActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), NewsFeedActivity.class);
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     getApplicationContext().startActivity(intent);
                 }
