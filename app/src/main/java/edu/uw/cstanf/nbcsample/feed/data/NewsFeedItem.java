@@ -1,7 +1,6 @@
 package edu.uw.cstanf.nbcsample.feed.data;
 
 public final class NewsFeedItem {
-
     private String headline;
     private String thumbnailUrl;
 

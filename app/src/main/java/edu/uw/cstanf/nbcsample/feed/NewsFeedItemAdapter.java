@@ -2,6 +2,9 @@ package edu.uw.cstanf.nbcsample.feed;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,18 +32,30 @@ import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesViewModel;
 import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticle;
 
 public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter.ItemViewHolder> {
+    private static final String LOG_TAG = "NewsFeedItemAdapter";
+
     private final Application application;
     private final Context context;
     private final List<NewsFeedItem> newsItems;
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
+        private final Context context;
         private final ImageButton saveButton;
         private final ImageView thumbnail;
         private final TextView headline;
+        private final Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                Toast.makeText(context, "Saved article.", Toast.LENGTH_SHORT).show();
+            }
+        };
 
-        ItemViewHolder(@NonNull View itemView) {
+
+        ItemViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
 
+
+            this.context = context;
             this.saveButton = itemView.findViewById(R.id.news_item_button);
             this.thumbnail = itemView.findViewById(R.id.news_item_image);
             this.headline = itemView.findViewById(R.id.news_item_text);
@@ -52,17 +67,17 @@ public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItem
 
             saveButton.setOnClickListener(v -> {
                 SavedArticlesViewModel savedArticlesViewModel = new SavedArticlesViewModel(application);
-                Futures.addCallback(savedArticlesViewModel.saveArticle(new SavedArticle()), new FutureCallback<Long>() {
+                Futures.addCallback(savedArticlesViewModel.saveArticle(new SavedArticle(newsItem.getHeadline(), newsItem.getThumbnailUrl())), new FutureCallback<Long>() {
                     @Override
                     public void onSuccess(@NullableDecl Long result) {
                         if (result != null && result != -1) {
-                            Toast.makeText(context, "Article saved.", Toast.LENGTH_SHORT).show();
+                            handler.sendMessage(new Message());
                         }
                     }
 
                     @Override
                     public void onFailure(Throwable t) {
-                        Log.w("CHRISTINA", "Failed to save article: " + t);
+                        Log.w(LOG_TAG, "Failed to save article: " + t);
                     }
                 }, MoreExecutors.directExecutor());
             });
@@ -79,7 +94,7 @@ public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItem
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.news_item, viewGroup, false);
-        return new ItemViewHolder(itemView);
+        return new ItemViewHolder(itemView, context);
     }
 
     @Override

@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 import edu.uw.cstanf.nbcsample.R;
 
 /** Displays articles a user has saved. */
@@ -25,9 +27,10 @@ public class SavedArticlesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        savedArticlesRecycler = container.findViewById(R.id.savedarticles_recycler);
+        View root = inflater.inflate(R.layout.fragment_savedarticles, container, false);
+        savedArticlesRecycler = root.findViewById(R.id.savedarticles_recycler);
 
-        return inflater.inflate(R.layout.fragment_savedarticles, container, false);
+        return root;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class SavedArticlesFragment extends Fragment {
         SavedArticlesViewModel viewModel = ViewModelProviders.of(this).get(SavedArticlesViewModel.class);
 
         RecyclerView.LayoutManager savedArticlesManager = new LinearLayoutManager(this.getContext());
-        RecyclerView.Adapter savedArticlesAdapter = new SavedArticlesAdapter(this.getActivity().getApplication(), this.getContext(), viewModel.getSavedArticles().getValue());
+        RecyclerView.Adapter savedArticlesAdapter = new SavedArticlesAdapter(this.getActivity().getApplication(), this.getContext(), new ArrayList<>());
 
         savedArticlesRecycler.setAdapter(savedArticlesAdapter);
         savedArticlesRecycler.setLayoutManager(savedArticlesManager);

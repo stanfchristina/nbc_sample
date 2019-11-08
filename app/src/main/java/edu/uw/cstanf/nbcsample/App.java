@@ -1,8 +1,8 @@
 package edu.uw.cstanf.nbcsample;
 
 import android.app.Application;
-import android.content.Intent;
 import android.util.Log;
+
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import edu.uw.cstanf.nbcsample.feed.NewsFeedFragment;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class App extends Application {
     private static final String LOG_TAG = "App";
@@ -29,9 +28,7 @@ public class App extends Application {
             @Override
             public void onSuccess(@NullableDecl Boolean dataLoaded) {
                 if (dataLoaded != null && dataLoaded) {
-                    Intent intent = new Intent(getApplicationContext(), NewsFeedFragment.class);
-                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                    getApplicationContext().startActivity(intent);
+
                 }
             }
 

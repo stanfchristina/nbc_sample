@@ -19,10 +19,16 @@ import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 public class NewsFeedFragment extends Fragment {
     private static final String LOG_TAG = "NewsFeedFragment";
 
+    public static NewsFeedFragment newInstance() {
+        return new NewsFeedFragment();
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        RecyclerView newsFeedRecycler = container.findViewById(R.id.newsfeed_recycler);
+        View root = inflater.inflate(R.layout.fragment_newsfeed, container, false);
+
+        RecyclerView newsFeedRecycler = root.findViewById(R.id.newsfeed_recycler);
         RecyclerView.LayoutManager newsFeedLayoutManager = new LinearLayoutManager(this.getContext());
         RecyclerView.Adapter newsFeedAdapter = new NewsFeedGroupAdapter(this.getActivity().getApplication(), this.getContext(), NewsFeedDataService.getInstance().getNewsFeedGroups());
 
@@ -30,7 +36,7 @@ public class NewsFeedFragment extends Fragment {
         newsFeedRecycler.setLayoutManager(newsFeedLayoutManager);
         newsFeedRecycler.addItemDecoration(new VerticalItemDecoration(12));
 
-        return inflater.inflate(R.layout.fragment_newsfeed, container, false);
+        return root;
     }
 
     static class VerticalItemDecoration extends RecyclerView.ItemDecoration {

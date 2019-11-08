@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+
 /**
  * Represents an article a user has saved.
  */
@@ -18,4 +19,9 @@ public final class SavedArticle {
 
     @ColumnInfo(name = "thumbnail_url")
     public String thumbnailUrl;
+
+    public SavedArticle(String headline, String thumbnailUrl) {
+        this.headline = headline;
+        this.thumbnailUrl = thumbnailUrl;
+    }
 }

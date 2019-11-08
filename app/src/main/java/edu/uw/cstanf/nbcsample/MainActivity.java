@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import edu.uw.cstanf.nbcsample.feed.NewsFeedFragment;
 import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_newsfeed:
+                    startFragment(NewsFeedFragment.newInstance());
                     break;
                 case R.id.nav_savedarticles:
                     startFragment(SavedArticlesFragment.newInstance());
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startFragment(Fragment fragment) {
+    public void startFragment(Fragment fragment) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);

@@ -2,6 +2,9 @@ package edu.uw.cstanf.nbcsample.savedarticles;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,13 +38,21 @@ final class SavedArticlesAdapter extends RecyclerView.Adapter<SavedArticlesAdapt
     private List<SavedArticle> savedArticles;
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
+        private final Context context;
         private final Button removeButton;
         private final ImageView thumbnail;
         private final TextView headline;
+        private final Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                Toast.makeText(context, "Removed article.", Toast.LENGTH_SHORT).show();
+            }
+        };
 
-        ArticleViewHolder(@NonNull View articleView) {
+        ArticleViewHolder(@NonNull View articleView, Context context) {
             super(articleView);
 
+            this.context = context;
             this.removeButton = articleView.findViewById(R.id.saved_article_button);
             this.thumbnail = articleView.findViewById(R.id.saved_article_image);
             this.headline = articleView.findViewById(R.id.saved_article_text);
@@ -57,7 +68,7 @@ final class SavedArticlesAdapter extends RecyclerView.Adapter<SavedArticlesAdapt
                     @Override
                     public void onSuccess(@NullableDecl Integer result) {
                         if (result != null && result != -1) {
-                            Toast.makeText(context, "Article removed.", Toast.LENGTH_SHORT).show();
+                            handler.sendMessage(new Message());
                         }
                     }
                     @Override
@@ -86,7 +97,7 @@ final class SavedArticlesAdapter extends RecyclerView.Adapter<SavedArticlesAdapt
     @Override
     public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View articleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_news_item, parent, false);
-        return new ArticleViewHolder(articleView);
+        return new ArticleViewHolder(articleView, context);
     }
 
     @Override
