@@ -10,7 +10,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
-import edu.uw.cstanf.nbcsample.feed.NewsFeedActivity;
+import edu.uw.cstanf.nbcsample.feed.NewsFeedFragment;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -29,7 +29,7 @@ public class App extends Application {
             @Override
             public void onSuccess(@NullableDecl Boolean dataLoaded) {
                 if (dataLoaded != null && dataLoaded) {
-                    Intent intent = new Intent(getApplicationContext(), NewsFeedActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), NewsFeedFragment.class);
                     intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
                     getApplicationContext().startActivity(intent);
                 }

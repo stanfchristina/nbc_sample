@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feed.NewsFeedActivity">
+    tools:context=".savedarticles.SavedArticlesFragment">
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/newsfeed_recycler"
+        android:id="@+id/savedarticles_recycler"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

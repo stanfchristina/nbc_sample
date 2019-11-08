@@ -3,31 +3,34 @@ package edu.uw.cstanf.nbcsample.feed;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 
-public class NewsFeedActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "NewsFeedActivity";
+public class NewsFeedFragment extends Fragment {
+    private static final String LOG_TAG = "NewsFeedFragment";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        Log.i("CHRISTINA", "onCreate in newsfeedactivity");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_newsfeed);
-
-        RecyclerView newsFeedRecycler = findViewById(R.id.newsfeed_recycler);
-        RecyclerView.LayoutManager newsFeedLayoutManager = new LinearLayoutManager(this);
-        RecyclerView.Adapter newsFeedAdapter = new NewsFeedGroupAdapter(this.getApplication(), this, NewsFeedDataService.getInstance().getNewsFeedGroups());
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        RecyclerView newsFeedRecycler = container.findViewById(R.id.newsfeed_recycler);
+        RecyclerView.LayoutManager newsFeedLayoutManager = new LinearLayoutManager(this.getContext());
+        RecyclerView.Adapter newsFeedAdapter = new NewsFeedGroupAdapter(this.getActivity().getApplication(), this.getContext(), NewsFeedDataService.getInstance().getNewsFeedGroups());
 
         newsFeedRecycler.setAdapter(newsFeedAdapter);
         newsFeedRecycler.setLayoutManager(newsFeedLayoutManager);
         newsFeedRecycler.addItemDecoration(new VerticalItemDecoration(12));
+
+        return inflater.inflate(R.layout.fragment_newsfeed, container, false);
     }
 
     static class VerticalItemDecoration extends RecyclerView.ItemDecoration {
