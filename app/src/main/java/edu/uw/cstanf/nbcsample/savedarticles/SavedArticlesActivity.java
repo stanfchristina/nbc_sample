@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import edu.uw.cstanf.nbcsample.R;
 
+/** Displays articles a user has saved. */
 public class SavedArticlesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,5 +24,11 @@ public class SavedArticlesActivity extends AppCompatActivity {
         savedArticlesRecycler.setLayoutManager(savedArticlesManager);
 
         viewModel.getSavedArticles().observe(this, ((SavedArticlesAdapter) savedArticlesAdapter)::setData);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

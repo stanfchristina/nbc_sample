@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,7 +56,7 @@ public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItem
                     @Override
                     public void onSuccess(@NullableDecl Long result) {
                         if (result != null && result != -1) {
-                            Log.i("CHRISTINA", "saving article...");
+                            Toast.makeText(context, "Article saved.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
