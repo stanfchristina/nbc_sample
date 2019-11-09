@@ -15,9 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.uw.cstanf.nbcsample.R;
+import edu.uw.cstanf.nbcsample.ui.VerticalItemDecoration;
 
 /** Displays articles a user has saved. */
 public class SavedArticlesFragment extends Fragment {
+    private static final int VERTICAL_ITEM_PADDING = 16;
+
     private RecyclerView savedArticlesRecycler;
 
     public static SavedArticlesFragment newInstance() {
@@ -30,6 +33,10 @@ public class SavedArticlesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_savedarticles, container, false);
         savedArticlesRecycler = root.findViewById(R.id.savedarticles_recycler);
 
+        RecyclerView.LayoutManager savedArticlesManager = new LinearLayoutManager(this.getContext());
+        savedArticlesRecycler.setLayoutManager(savedArticlesManager);
+        savedArticlesRecycler.addItemDecoration(new VerticalItemDecoration(VERTICAL_ITEM_PADDING));
+
         return root;
     }
 
@@ -38,13 +45,10 @@ public class SavedArticlesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         SavedArticlesViewModel viewModel = ViewModelProviders.of(this).get(SavedArticlesViewModel.class);
-
-        RecyclerView.LayoutManager savedArticlesManager = new LinearLayoutManager(this.getContext());
         RecyclerView.Adapter savedArticlesAdapter = new SavedArticlesAdapter(this.getActivity().getApplication(), this.getContext(), new ArrayList<>());
-
         savedArticlesRecycler.setAdapter(savedArticlesAdapter);
-        savedArticlesRecycler.setLayoutManager(savedArticlesManager);
 
+        // Subscribe to changes in saved articles to update the adapter UI.
         viewModel.getSavedArticles().observe(getViewLifecycleOwner(), ((SavedArticlesAdapter) savedArticlesAdapter)::setData);
     }
 }

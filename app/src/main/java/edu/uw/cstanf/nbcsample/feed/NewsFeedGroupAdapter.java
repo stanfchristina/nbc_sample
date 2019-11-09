@@ -18,6 +18,8 @@ import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedGroup;
 
 final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapter.GroupViewHolder> {
+    private static final int HORIZONTAL_ITEM_SPACE = 8;
+
     private final Application application;
     private final Context context;
     private final List<NewsFeedGroup> newsGroups;
@@ -39,7 +41,7 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
 
             itemRecycler.setLayoutManager(itemManager);
             itemRecycler.setAdapter(itemAdapter);
-            itemRecycler.addItemDecoration(new HorizontalItemDecoration(16));
+            itemRecycler.addItemDecoration(new HorizontalItemDecoration(HORIZONTAL_ITEM_SPACE));
             groupHeader.setText(newsGroup.getHeader());
         }
     }

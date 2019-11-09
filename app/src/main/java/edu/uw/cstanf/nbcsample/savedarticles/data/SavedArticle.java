@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey;
  */
 @Entity(tableName = "saved_articles")
 public final class SavedArticle {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "article_id")
     public int articleId;
 
@@ -20,7 +20,8 @@ public final class SavedArticle {
     @ColumnInfo(name = "thumbnail_url")
     public String thumbnailUrl;
 
-    public SavedArticle(String headline, String thumbnailUrl) {
+    public SavedArticle(int articleId, String headline, String thumbnailUrl) {
+        this.articleId = articleId;
         this.headline = headline;
         this.thumbnailUrl = thumbnailUrl;
     }

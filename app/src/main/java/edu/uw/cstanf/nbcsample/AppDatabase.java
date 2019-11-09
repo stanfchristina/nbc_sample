@@ -14,7 +14,7 @@ import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticlesDao;
  *
  * <p> Currently only holds the Saved Articles table.
  */
-@Database(entities = {SavedArticle.class}, version = 1)
+@Database(entities = {SavedArticle.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract SavedArticlesDao savedArticlesDao();
 
@@ -25,7 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if (instance == null) {
             synchronized (AppDatabase.class) {
                 if (instance == null) {
-                    instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME).build();
+                    instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
                 }
             }
         }

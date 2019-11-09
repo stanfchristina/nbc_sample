@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="300dp">
-
     <TextView
         android:id="@+id/news_group_header"
         android:layout_width="match_parent"
@@ -11,7 +10,6 @@
         android:textColor="#000000"
         android:textSize="28dp"
         android:text="placeholder" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_recycler"
         android:scrollbars="horizontal"

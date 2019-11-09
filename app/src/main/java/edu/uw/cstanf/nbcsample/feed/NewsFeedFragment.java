@@ -1,8 +1,6 @@
 package edu.uw.cstanf.nbcsample.feed;
 
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
+import edu.uw.cstanf.nbcsample.ui.VerticalItemDecoration;
 
 public class NewsFeedFragment extends Fragment {
+    private static final int VERTICAL_ITEM_PADDING = 16;
     private static final String LOG_TAG = "NewsFeedFragment";
 
     public static NewsFeedFragment newInstance() {
@@ -34,25 +34,8 @@ public class NewsFeedFragment extends Fragment {
 
         newsFeedRecycler.setAdapter(newsFeedAdapter);
         newsFeedRecycler.setLayoutManager(newsFeedLayoutManager);
-        newsFeedRecycler.addItemDecoration(new VerticalItemDecoration(12));
+        newsFeedRecycler.addItemDecoration(new VerticalItemDecoration(VERTICAL_ITEM_PADDING));
 
         return root;
-    }
-
-    static class VerticalItemDecoration extends RecyclerView.ItemDecoration {
-        private final int verticalSpace;
-
-        VerticalItemDecoration(int verticalSpace) {
-            this.verticalSpace = verticalSpace;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                                   RecyclerView.State state) {
-            int endItemPosition = parent.getAdapter().getItemCount() - 1;
-            if (parent.getChildAdapterPosition(view) != endItemPosition) {
-                outRect.bottom = verticalSpace;
-            }
-        }
     }
 }

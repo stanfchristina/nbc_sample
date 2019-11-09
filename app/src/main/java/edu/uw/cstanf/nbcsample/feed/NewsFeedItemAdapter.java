@@ -50,7 +50,6 @@ public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItem
             }
         };
 
-
         ItemViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
 
@@ -67,7 +66,7 @@ public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItem
 
             saveButton.setOnClickListener(v -> {
                 SavedArticlesViewModel savedArticlesViewModel = new SavedArticlesViewModel(application);
-                Futures.addCallback(savedArticlesViewModel.saveArticle(new SavedArticle(newsItem.getHeadline(), newsItem.getThumbnailUrl())), new FutureCallback<Long>() {
+                Futures.addCallback(savedArticlesViewModel.saveArticle(new SavedArticle(newsItem.hashCode(), newsItem.getHeadline(), newsItem.getThumbnailUrl())), new FutureCallback<Long>() {
                     @Override
                     public void onSuccess(@NullableDecl Long result) {
                         if (result != null && result != -1) {
