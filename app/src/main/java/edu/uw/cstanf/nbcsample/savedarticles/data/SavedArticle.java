@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
 /**
  * Represents an article a user has saved.
  */

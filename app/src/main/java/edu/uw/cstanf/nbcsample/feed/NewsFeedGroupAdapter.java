@@ -17,6 +17,7 @@ import java.util.List;
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedGroup;
 
+/** Populates the news feed with distinct groupings of news items. */
 final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapter.GroupViewHolder> {
     private static final int HORIZONTAL_ITEM_SPACE = 8;
 
@@ -69,6 +70,7 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
         return newsGroups.size();
     }
 
+    /** Adds the specified amount of horizontal spacing between {@link RecyclerView} items. */
     static class HorizontalItemDecoration extends RecyclerView.ItemDecoration {
         private final int horizontalSpace;
 

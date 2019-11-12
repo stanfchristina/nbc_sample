@@ -1,8 +1,7 @@
 package edu.uw.cstanf.nbcsample;
 
 import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,16 +9,44 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
+
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import edu.uw.cstanf.nbcsample.feed.NewsFeedFragment;
+import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesFragment;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String LOG_TAG = "MainActivity";
+    private static final String SOURCE_URL = "https://s3.amazonaws.com/shrekendpoint/news.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Futures.addCallback(NewsFeedDataService.getInstance().updateData(SOURCE_URL), new FutureCallback<Boolean>() {
+            @Override
+            public void onSuccess(@NullableDecl Boolean dataLoaded) {
+                if (dataLoaded != null && dataLoaded) {
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.w(LOG_TAG, "Error fetching news feed data on startup: " + t);
+            }
+        }, MoreExecutors.directExecutor());
+
+        Log.i("christina", "MainActivity onCreate");
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            // Show the news feed default on start-up.
+            startFragment(NewsFeedFragment.newInstance());
+        }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.ui.VerticalItemDecoration;
 
-/** Displays articles a user has saved. */
+/** Displays news items a user has saved. */
 public class SavedArticlesFragment extends Fragment {
     private static final int VERTICAL_ITEM_PADDING = 16;
 

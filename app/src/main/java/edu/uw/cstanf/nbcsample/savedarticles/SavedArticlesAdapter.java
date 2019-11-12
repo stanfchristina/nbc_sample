@@ -86,6 +86,7 @@ final class SavedArticlesAdapter extends RecyclerView.Adapter<SavedArticlesAdapt
         this.savedArticles = savedArticles;
     }
 
+    /** Sets this adapter's data to the new provided data then refreshes relevant views. */
     public void setData(List<SavedArticle> updatedSavedArticles) {
         this.savedArticles = updatedSavedArticles;
         notifyDataSetChanged();

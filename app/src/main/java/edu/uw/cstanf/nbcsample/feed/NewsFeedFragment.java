@@ -15,9 +15,9 @@ import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 import edu.uw.cstanf.nbcsample.ui.VerticalItemDecoration;
 
+/** Displays a news feed populated by {@link NewsFeedDataService}. */
 public class NewsFeedFragment extends Fragment {
     private static final int VERTICAL_ITEM_PADDING = 16;
-    private static final String LOG_TAG = "NewsFeedFragment";
 
     public static NewsFeedFragment newInstance() {
         return new NewsFeedFragment();

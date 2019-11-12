@@ -31,7 +31,8 @@ import edu.uw.cstanf.nbcsample.feed.data.NewsFeedItem;
 import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesViewModel;
 import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticle;
 
-public final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter.ItemViewHolder> {
+/** Populates a news grouping with distinct news items. */
+final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter.ItemViewHolder> {
     private static final String LOG_TAG = "NewsFeedItemAdapter";
 
     private final Application application;
