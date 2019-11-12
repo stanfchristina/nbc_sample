@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NBC Sample</string>
+    <string name="remove_saved_item_button">Remove</string>
 </resources>

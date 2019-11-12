@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp">
+    android:layout_height="@dimen/news_group_height">
     <TextView
         android:id="@+id/news_group_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:textColor="#000000"
-        android:textSize="28dp"
+        android:textSize="@dimen/news_group_headline_size"
         android:text="placeholder" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_recycler"
         android:scrollbars="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="256dp"
-        android:layout_alignParentBottom="true"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/news_item_card_size"
+        android:layout_alignParentBottom="true">
+    </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

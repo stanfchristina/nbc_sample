@@ -81,10 +81,7 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                    RecyclerView.State state) {
-            int endItemPosition = parent.getAdapter().getItemCount() - 1;
-            if (parent.getChildAdapterPosition(view) != endItemPosition) {
-                outRect.right = horizontalSpace;
-            }
+            outRect.right = horizontalSpace;
         }
     }
 }

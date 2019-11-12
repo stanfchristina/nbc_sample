@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="saved_item_card_height">196dp</dimen>
+    <dimen name="saved_item_text_padding">8dp</dimen>
+    <dimen name="saved_item_text_size">18dp</dimen>
+    <dimen name="remove_saved_item_button_height">48dp</dimen>
+
+    <dimen name="news_group_height">300dp</dimen>
+    <dimen name="news_group_headline_size">28dp</dimen>
+
+    <dimen name="news_item_card_size">256dp</dimen>
+    <dimen name="news_item_text_size">18dp</dimen>
+    <dimen name="news_item_text_padding">8dp</dimen>
+    <dimen name="news_item_save_button_size">48dp</dimen>
+    <dimen name="news_item_save_button_padding">8dp</dimen>
+</resources>

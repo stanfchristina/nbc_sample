@@ -34,7 +34,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(@NullableDecl Boolean dataLoaded) {
                     if (dataLoaded != null && dataLoaded) {
                         // Show the news feed default on start-up.
-                        startFragment(NewsFeedFragment.newInstance());
+                        // On older devices, this async task may complete after onCreate() so
+                        // force the news feed to display and accept potential state loss
+                        // because no state should change between start-up (blank screen) and
+                        // displaying the initial UI.
+                        startFragment(NewsFeedFragment.newInstance(), true);
                     }
                 }
                 @Override
@@ -48,21 +52,25 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_newsfeed:
-                    startFragment(NewsFeedFragment.newInstance());
+                    startFragment(NewsFeedFragment.newInstance(), false);
                     break;
                 case R.id.nav_savedarticles:
-                    startFragment(SavedArticlesFragment.newInstance());
+                    startFragment(SavedArticlesFragment.newInstance(), false);
                     break;
             }
             return true;
         });
     }
 
-    public void startFragment(Fragment fragment) {
+    private void startFragment(Fragment fragment, boolean isDefaultFragment) {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
-        transaction.commit();
+        if (isDefaultFragment) {
+            transaction.commitAllowingStateLoss();
+        } else {
+            transaction.commit();
+        }
     }
 }
