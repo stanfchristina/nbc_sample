@@ -15,15 +15,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:padding="8dp"
+        android:background="#80000000"
         android:textColor="#FFFFFF"
         android:textSize="18dp"
         android:text="placeholder" />
     <ImageButton
         android:id="@+id/news_item_button"
-        android:src="@drawable/ic_action_add"
+        android:src="@drawable/ic_action_save"
         android:background="?android:attr/selectableItemBackground"
         android:scaleType="fitXY"
         android:layout_width="48dp"

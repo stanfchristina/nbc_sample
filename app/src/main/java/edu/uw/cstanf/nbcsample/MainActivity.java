@@ -26,26 +26,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Futures.addCallback(NewsFeedDataService.getInstance().updateData(SOURCE_URL), new FutureCallback<Boolean>() {
-            @Override
-            public void onSuccess(@NullableDecl Boolean dataLoaded) {
-                if (dataLoaded != null && dataLoaded) {
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.w(LOG_TAG, "Error fetching news feed data on startup: " + t);
-            }
-        }, MoreExecutors.directExecutor());
-
-        Log.i("christina", "MainActivity onCreate");
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            // Show the news feed default on start-up.
-            startFragment(NewsFeedFragment.newInstance());
+            Futures.addCallback(NewsFeedDataService.getInstance().updateData(SOURCE_URL), new FutureCallback<Boolean>() {
+                @Override
+                public void onSuccess(@NullableDecl Boolean dataLoaded) {
+                    if (dataLoaded != null && dataLoaded) {
+                        // Show the news feed default on start-up.
+                        startFragment(NewsFeedFragment.newInstance());
+                    }
+                }
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.w(LOG_TAG, "Error fetching news feed data on startup: " + t);
+                }
+            }, MoreExecutors.directExecutor());
         }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);

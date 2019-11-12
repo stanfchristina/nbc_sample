@@ -54,7 +54,6 @@ final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter
         ItemViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
 
-
             this.context = context;
             this.saveButton = itemView.findViewById(R.id.news_item_button);
             this.thumbnail = itemView.findViewById(R.id.news_item_image);
@@ -67,7 +66,9 @@ final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter
 
             saveButton.setOnClickListener(v -> {
                 SavedArticlesViewModel savedArticlesViewModel = new SavedArticlesViewModel(application);
-                Futures.addCallback(savedArticlesViewModel.saveArticle(new SavedArticle(newsItem.hashCode(), newsItem.getHeadline(), newsItem.getThumbnailUrl())), new FutureCallback<Long>() {
+                SavedArticle savedArticle = new SavedArticle(newsItem.hashCode(), newsItem.getHeadline(), newsItem.getThumbnailUrl());
+
+                Futures.addCallback(savedArticlesViewModel.saveArticle(savedArticle), new FutureCallback<Long>() {
                     @Override
                     public void onSuccess(@NullableDecl Long result) {
                         if (result != null && result != -1) {
