@@ -3,6 +3,7 @@ package edu.uw.cstanf.nbcsample;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import edu.uw.cstanf.nbcsample.feed.NewsFeedFragment;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
+import edu.uw.cstanf.nbcsample.feed.data.NewsFeedItem;
 import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesFragment;
 import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesViewModel;
 import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticle;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements NewsItemClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        NewsFeedFragment newsFeedFragment = new NewsFeedFragment(this);
         if (savedInstanceState == null) {
             Futures.addCallback(NewsFeedDataService.getInstance().updateData(SOURCE_URL), new FutureCallback<Boolean>() {
                 @Override
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NewsItemClickList
                         // force the news feed to display and accept potential state loss
                         // because no state should change between start-up (blank screen) and
                         // displaying the initial UI.
-                        startFragment(NewsFeedFragment.newInstance(), true);
+                        startFragment(newsFeedFragment, true);
                     }
                 }
                 @Override
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NewsItemClickList
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_newsfeed:
-                    startFragment(NewsFeedFragment.newInstance(), false);
+                    startFragment(newsFeedFragment, false);
                     break;
                 case R.id.nav_savedarticles:
                     startFragment(new SavedArticlesFragment(this), false);
@@ -70,6 +73,11 @@ public class MainActivity extends AppCompatActivity implements NewsItemClickList
 
     @Override
     public void onItemClicked(String articleLink) {
+        if (TextUtils.isEmpty(articleLink)) {
+            Log.w(LOG_TAG, "Cannot open link in browser: link is null/empty.");
+            return;
+        }
+
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleLink));
         if (intent.resolveActivity(getPackageManager()) != null) {
             Log.i(LOG_TAG, "Opening link in web browser: " + articleLink);
@@ -79,7 +87,12 @@ public class MainActivity extends AppCompatActivity implements NewsItemClickList
 
     @Override
     public void onRemoveButtonClicked(SavedArticle article) {
-        SavedArticlesViewModel viewModel = new SavedArticlesViewModel(this.getApplication());
+        if (article == null) {
+            Log.w(LOG_TAG, "Cannot removed saved article: article is null.");
+            return;
+        }
+
+        SavedArticlesViewModel viewModel = new SavedArticlesViewModel(getApplication());
         Futures.addCallback(viewModel.deleteArticle(article), new FutureCallback<Integer>() {
             @Override
             public void onSuccess(@NullableDecl Integer result) {
@@ -95,9 +108,27 @@ public class MainActivity extends AppCompatActivity implements NewsItemClickList
     }
 
     @Override
-    public void onSaveButtonClicked() {
-        SavedArticlesViewModel savedArticlesViewModel = new SavedArticlesViewModel(this.getApplication());
-        Toast.makeText(this, "Saved article.", Toast.LENGTH_SHORT).show();
+    public void onSaveButtonClicked(NewsFeedItem newsItem) {
+        if (newsItem == null) {
+            Log.w(LOG_TAG, "Cannot save news item: newsItem is null.");
+            return;
+        }
+
+        SavedArticlesViewModel savedArticlesViewModel = new SavedArticlesViewModel(getApplication());
+        SavedArticle savedArticle = new SavedArticle(newsItem.hashCode(), newsItem.getHeadline(), newsItem.getThumbnailUrl());
+        Futures.addCallback(savedArticlesViewModel.saveArticle(savedArticle), new FutureCallback<Long>() {
+            @Override
+            public void onSuccess(@NullableDecl Long result) {
+                if (result != null && result != -1) {
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Saved article.", Toast.LENGTH_SHORT).show());
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.w(LOG_TAG, "Failed to save article: " + t);
+            }
+        }, MoreExecutors.directExecutor());
     }
 
     private void startFragment(Fragment fragment, boolean isDefaultFragment) {

@@ -16,14 +16,15 @@ import java.util.List;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedGroup;
+import edu.uw.cstanf.nbcsample.ui.NewsItemClickListener;
 
 /** Populates the news feed with distinct groupings of news items. */
 final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapter.GroupViewHolder> {
     private static final int HORIZONTAL_ITEM_SPACE = 8;
 
-    private final Application application;
     private final Context context;
     private final List<NewsFeedGroup> newsGroups;
+    private final NewsItemClickListener newsItemClickListener;
 
     static class GroupViewHolder extends RecyclerView.ViewHolder {
         private final TextView groupHeader;
@@ -36,9 +37,9 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
             this.itemRecycler = groupView.findViewById(R.id.group_recycler);
         }
 
-        void bind(Application application, Context context, NewsFeedGroup newsGroup) {
+        void bind(Context context, NewsFeedGroup newsGroup, NewsItemClickListener newsItemClickListener) {
             LinearLayoutManager itemManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-            NewsFeedItemAdapter itemAdapter = new NewsFeedItemAdapter(application, context, newsGroup.getGroupItems());
+            NewsFeedItemAdapter itemAdapter = new NewsFeedItemAdapter(context, newsGroup.getGroupItems(), newsItemClickListener);
 
             itemRecycler.setLayoutManager(itemManager);
             itemRecycler.setAdapter(itemAdapter);
@@ -47,10 +48,10 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
         }
     }
 
-    NewsFeedGroupAdapter(Application application, Context context, List<NewsFeedGroup> newsGroups) {
-        this.application = application;
+    NewsFeedGroupAdapter(Context context, List<NewsFeedGroup> newsGroups, NewsItemClickListener newsItemClickListener) {
         this.context = context;
         this.newsGroups = newsGroups;
+        this.newsItemClickListener = newsItemClickListener;
     }
 
     @NonNull
@@ -62,7 +63,7 @@ final class NewsFeedGroupAdapter extends RecyclerView.Adapter<NewsFeedGroupAdapt
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder groupViewHolder, int i) {
-        groupViewHolder.bind(application, context, newsGroups.get(i));
+        groupViewHolder.bind(context, newsGroups.get(i), newsItemClickListener);
     }
 
     @Override
