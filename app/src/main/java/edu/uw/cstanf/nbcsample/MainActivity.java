@@ -115,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements NewsItemClickList
         }
 
         SavedArticlesViewModel savedArticlesViewModel = new SavedArticlesViewModel(getApplication());
-        SavedArticle savedArticle = new SavedArticle(newsItem.hashCode(), newsItem.getHeadline(), newsItem.getThumbnailUrl());
+        SavedArticle savedArticle = new SavedArticle(
+                newsItem.hashCode(), newsItem.getHeadline(), newsItem.getArticleUrl(), newsItem.getThumbnailUrl());
+
         Futures.addCallback(savedArticlesViewModel.saveArticle(savedArticle), new FutureCallback<Long>() {
             @Override
             public void onSuccess(@NullableDecl Long result) {

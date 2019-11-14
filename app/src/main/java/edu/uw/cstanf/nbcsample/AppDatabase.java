@@ -14,7 +14,7 @@ import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticlesDao;
  *
  * <p> Currently only holds the Saved Articles table.
  */
-@Database(entities = {SavedArticle.class}, version = 2)
+@Database(entities = {SavedArticle.class}, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract SavedArticlesDao savedArticlesDao();
 

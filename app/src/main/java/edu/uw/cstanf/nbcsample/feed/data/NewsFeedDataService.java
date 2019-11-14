@@ -41,6 +41,7 @@ public final class NewsFeedDataService {
     private static final String SECTION_VALID_KEY = "showMore";
     private static final String ITEM_HEADLINE_KEY = "headline";
     private static final String ITEM_THUMBNAIL_KEY = "tease";
+    private static final String ITEM_URL_KEY = "url";
 
     private static NewsFeedDataService instance;
 
@@ -129,7 +130,10 @@ public final class NewsFeedDataService {
             List<NewsFeedItem> promoGroup = new ArrayList<>();
             for (int i = 0; i < promoItems.length(); i++) {
                 JSONObject promoItem = promoItems.getJSONObject(i);
-                NewsFeedItem item = new NewsFeedItem(promoItem.getString(ITEM_HEADLINE_KEY), promoItem.getString(ITEM_THUMBNAIL_KEY));
+                NewsFeedItem item = new NewsFeedItem(
+                        promoItem.getString(ITEM_HEADLINE_KEY),
+                        promoItem.getString(ITEM_URL_KEY),
+                        promoItem.getString(ITEM_THUMBNAIL_KEY));
                 promoGroup.add(item);
             }
 
@@ -151,7 +155,10 @@ public final class NewsFeedDataService {
             List<NewsFeedItem> sectionGroup = new ArrayList<>();
             for (int i = 0; i < sectionItems.length(); i++) {
                 JSONObject article = sectionItems.getJSONObject(i);
-                NewsFeedItem item = new NewsFeedItem(article.getString(ITEM_HEADLINE_KEY), article.getString(ITEM_THUMBNAIL_KEY));
+                NewsFeedItem item = new NewsFeedItem(
+                        article.getString(ITEM_HEADLINE_KEY),
+                        article.getString(ITEM_URL_KEY),
+                        article.getString(ITEM_THUMBNAIL_KEY));
                 sectionGroup.add(item);
             }
 
@@ -169,7 +176,10 @@ public final class NewsFeedDataService {
             List<NewsFeedItem> videoGroup = new ArrayList<>();
             for (int i = 0; i < videoItems.length(); i++) {
                 JSONObject video = videoItems.getJSONObject(i);
-                NewsFeedItem item = new NewsFeedItem(video.getString(ITEM_HEADLINE_KEY), video.getString(ITEM_THUMBNAIL_KEY));
+                NewsFeedItem item = new NewsFeedItem(
+                        video.getString(ITEM_HEADLINE_KEY),
+                        video.getString(ITEM_URL_KEY),
+                        video.getString(ITEM_THUMBNAIL_KEY));
                 videoGroup.add(item);
             }
 

@@ -29,6 +29,7 @@ final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter
         private final ImageButton saveButton;
         private final ImageView thumbnail;
         private final TextView headline;
+        private final View itemView;
 
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -36,11 +37,14 @@ final class NewsFeedItemAdapter extends RecyclerView.Adapter<NewsFeedItemAdapter
             this.saveButton = itemView.findViewById(R.id.news_item_button);
             this.thumbnail = itemView.findViewById(R.id.news_item_image);
             this.headline = itemView.findViewById(R.id.news_item_text);
+            this.itemView = itemView;
         }
 
         void bind(Context context, NewsFeedItem newsItem, NewsItemClickListener newsItemClickListener) {
             Glide.with(context).load(newsItem.getThumbnailUrl()).into(thumbnail);
             headline.setText(newsItem.getHeadline());
+
+            itemView.setOnClickListener(v -> newsItemClickListener.onItemClicked(newsItem.getArticleUrl()));
             saveButton.setOnClickListener(v -> newsItemClickListener.onSaveButtonClicked(newsItem));
         }
     }

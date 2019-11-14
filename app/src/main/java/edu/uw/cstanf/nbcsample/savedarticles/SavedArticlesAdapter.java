@@ -47,7 +47,7 @@ final class SavedArticlesAdapter extends RecyclerView.Adapter<SavedArticlesAdapt
             Glide.with(context).load(article.thumbnailUrl).into(thumbnail);
             headline.setText(article.headline);
 
-            articleView.setOnClickListener(v -> newsItemClickListener.onItemClicked("https://www.nbcnews.com/video/all-12-boys-and-coach-rescued-from-thai-cave-1273710147636"));
+            articleView.setOnClickListener(v -> newsItemClickListener.onItemClicked(article.articleUrl));
             removeButton.setOnClickListener(v -> newsItemClickListener.onRemoveButtonClicked(article));
         }
     }

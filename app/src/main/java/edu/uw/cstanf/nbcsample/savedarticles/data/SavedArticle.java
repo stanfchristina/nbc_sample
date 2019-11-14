@@ -16,12 +16,16 @@ public final class SavedArticle {
     @ColumnInfo(name = "headline")
     public String headline;
 
+    @ColumnInfo(name = "article_url")
+    public String articleUrl;
+
     @ColumnInfo(name = "thumbnail_url")
     public String thumbnailUrl;
 
-    public SavedArticle(int articleId, String headline, String thumbnailUrl) {
+    public SavedArticle(int articleId, String headline, String articleUrl, String thumbnailUrl) {
         this.articleId = articleId;
         this.headline = headline;
+        this.articleUrl = articleUrl;
         this.thumbnailUrl = thumbnailUrl;
     }
 }
