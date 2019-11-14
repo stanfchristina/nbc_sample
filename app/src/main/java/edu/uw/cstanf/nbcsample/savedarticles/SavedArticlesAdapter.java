@@ -28,61 +28,43 @@ import java.util.List;
 
 import edu.uw.cstanf.nbcsample.R;
 import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticle;
+import edu.uw.cstanf.nbcsample.ui.NewsItemClickListener;
 
 /** Manages dynamically displaying articles a user has saved. */
 final class SavedArticlesAdapter extends RecyclerView.Adapter<SavedArticlesAdapter.ArticleViewHolder> {
     private static final String LOG_TAG = "SavedArticlesAdapter";
 
-    private final Application application;
     private final Context context;
+    private final NewsItemClickListener newsItemClickListener;
     private List<SavedArticle> savedArticles;
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
-        private final Context context;
         private final Button removeButton;
         private final ImageView thumbnail;
         private final TextView headline;
-        private final Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message message) {
-                Toast.makeText(context, "Removed article.", Toast.LENGTH_SHORT).show();
-            }
-        };
+        private final View articleView;
 
-        ArticleViewHolder(@NonNull View articleView, Context context) {
+        ArticleViewHolder(@NonNull View articleView) {
             super(articleView);
 
-            this.context = context;
+            this.articleView = articleView;
             this.removeButton = articleView.findViewById(R.id.saved_article_button);
             this.thumbnail = articleView.findViewById(R.id.saved_article_image);
             this.headline = articleView.findViewById(R.id.saved_article_text);
         }
 
-        void bind(Application application, Context context, SavedArticle article) {
+        void bind(Context context, NewsItemClickListener newsItemClickListener, SavedArticle article) {
             Glide.with(context).load(article.thumbnailUrl).into(thumbnail);
             headline.setText(article.headline);
 
-            removeButton.setOnClickListener(v -> {
-                SavedArticlesViewModel viewModel = new SavedArticlesViewModel(application);
-                Futures.addCallback(viewModel.deleteArticle(article), new FutureCallback<Integer>() {
-                    @Override
-                    public void onSuccess(@NullableDecl Integer result) {
-                        if (result != null && result != -1) {
-                            handler.sendMessage(new Message());
-                        }
-                    }
-                    @Override
-                    public void onFailure(Throwable t) {
-                        Log.w(LOG_TAG, "Error attempting to remove saved article: " + t);
-                    }
-                }, MoreExecutors.directExecutor());
-            });
+            articleView.setOnClickListener(v -> newsItemClickListener.onItemClicked("https://www.nbcnews.com/video/all-12-boys-and-coach-rescued-from-thai-cave-1273710147636"));
+            removeButton.setOnClickListener(v -> newsItemClickListener.onRemoveButtonClicked(article));
         }
     }
 
-    SavedArticlesAdapter(Application application, Context context, List<SavedArticle> savedArticles) {
-        this.application = application;
+    SavedArticlesAdapter(Context context, NewsItemClickListener newsItemClickListener, List<SavedArticle> savedArticles) {
         this.context = context;
+        this.newsItemClickListener = newsItemClickListener;
         this.savedArticles = savedArticles;
     }
 
@@ -98,12 +80,12 @@ final class SavedArticlesAdapter extends RecyclerView.Adapter<SavedArticlesAdapt
     @Override
     public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View articleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.saved_news_item, parent, false);
-        return new ArticleViewHolder(articleView, context);
+        return new ArticleViewHolder(articleView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder articleViewHolder, int i) {
-        articleViewHolder.bind(application, context, savedArticles.get(i));
+        articleViewHolder.bind(context, newsItemClickListener, savedArticles.get(i));
     }
 
     @Override

@@ -1,7 +1,10 @@
 package edu.uw.cstanf.nbcsample;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -18,8 +21,11 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import edu.uw.cstanf.nbcsample.feed.NewsFeedFragment;
 import edu.uw.cstanf.nbcsample.feed.data.NewsFeedDataService;
 import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesFragment;
+import edu.uw.cstanf.nbcsample.savedarticles.SavedArticlesViewModel;
+import edu.uw.cstanf.nbcsample.savedarticles.data.SavedArticle;
+import edu.uw.cstanf.nbcsample.ui.NewsItemClickListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NewsItemClickListener {
     private static final String LOG_TAG = "MainActivity";
     private static final String SOURCE_URL = "https://s3.amazonaws.com/shrekendpoint/news.json";
 
@@ -55,11 +61,43 @@ public class MainActivity extends AppCompatActivity {
                     startFragment(NewsFeedFragment.newInstance(), false);
                     break;
                 case R.id.nav_savedarticles:
-                    startFragment(SavedArticlesFragment.newInstance(), false);
+                    startFragment(new SavedArticlesFragment(this), false);
                     break;
             }
             return true;
         });
+    }
+
+    @Override
+    public void onItemClicked(String articleLink) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleLink));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            Log.i(LOG_TAG, "Opening link in web browser: " + articleLink);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onRemoveButtonClicked(SavedArticle article) {
+        SavedArticlesViewModel viewModel = new SavedArticlesViewModel(this.getApplication());
+        Futures.addCallback(viewModel.deleteArticle(article), new FutureCallback<Integer>() {
+            @Override
+            public void onSuccess(@NullableDecl Integer result) {
+                if (result != null && result != -1) {
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Removed article.", Toast.LENGTH_SHORT).show());
+                }
+            }
+            @Override
+            public void onFailure(Throwable t) {
+                Log.w(LOG_TAG, "Error attempting to remove saved article: " + t);
+            }
+        }, MoreExecutors.directExecutor());
+    }
+
+    @Override
+    public void onSaveButtonClicked() {
+        SavedArticlesViewModel savedArticlesViewModel = new SavedArticlesViewModel(this.getApplication());
+        Toast.makeText(this, "Saved article.", Toast.LENGTH_SHORT).show();
     }
 
     private void startFragment(Fragment fragment, boolean isDefaultFragment) {

@@ -15,16 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import edu.uw.cstanf.nbcsample.R;
+import edu.uw.cstanf.nbcsample.ui.NewsItemClickListener;
 import edu.uw.cstanf.nbcsample.ui.VerticalItemDecoration;
 
 /** Displays news items a user has saved. */
 public class SavedArticlesFragment extends Fragment {
     private static final int VERTICAL_ITEM_PADDING = 16;
 
+    private final NewsItemClickListener newsItemClickListener;
     private RecyclerView savedArticlesRecycler;
 
-    public static SavedArticlesFragment newInstance() {
-        return new SavedArticlesFragment();
+    public SavedArticlesFragment(NewsItemClickListener newsItemClickListener) {
+        this.newsItemClickListener = newsItemClickListener;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class SavedArticlesFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_savedarticles, container, false);
         savedArticlesRecycler = root.findViewById(R.id.savedarticles_recycler);
 
-        RecyclerView.LayoutManager savedArticlesManager = new LinearLayoutManager(this.getContext());
+        RecyclerView.LayoutManager savedArticlesManager = new LinearLayoutManager(getContext());
         savedArticlesRecycler.setLayoutManager(savedArticlesManager);
         savedArticlesRecycler.addItemDecoration(new VerticalItemDecoration(VERTICAL_ITEM_PADDING));
 
@@ -45,7 +47,7 @@ public class SavedArticlesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         SavedArticlesViewModel viewModel = ViewModelProviders.of(this).get(SavedArticlesViewModel.class);
-        RecyclerView.Adapter savedArticlesAdapter = new SavedArticlesAdapter(this.getActivity().getApplication(), this.getContext(), new ArrayList<>());
+        RecyclerView.Adapter savedArticlesAdapter = new SavedArticlesAdapter(getContext(), newsItemClickListener, new ArrayList<>());
         savedArticlesRecycler.setAdapter(savedArticlesAdapter);
 
         // Subscribe to changes in saved articles to update the adapter UI.
